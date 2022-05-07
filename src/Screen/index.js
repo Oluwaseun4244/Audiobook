@@ -89,10 +89,12 @@ export default function Audio() {
     setTitle(title);
 
     if (title === lastPlayedState.audioTitle) {
-        alert("yep1");
+        // alert("yep1");
+        // console.log("state duration", lastPlayedState.audioDuration)
+        // console.log("audio duration", audioPlayer.current.duration)
       setTimeout(() => {
-        if (lastPlayedState.audioDuration === audioPlayer.current.duration) {
-            alert("yep2");
+        // if (lastPlayedState.audioDuration === audioPlayer.current.duration) {
+            // alert("yep2");
           setTimeout(() => {
             audioPlayer.current.currentTime = lastPlayedState.audioCurrentTime;
             progressBar.current.value = lastPlayedState.audioCurrentTime;
@@ -102,8 +104,8 @@ export default function Audio() {
 
             audioPlayer.current.play();
             animationRef.current = requestAnimationFrame(whilePlaying);
-          }, 500);
-        }
+          }, 800);
+        // }
       }, 400);
     }
 
@@ -145,6 +147,7 @@ export default function Audio() {
               <Text fontSize="19px" fontWeight="500" color="#000000">
                 Instaread
               </Text>
+        
             </HStack>
        
           </Box>
