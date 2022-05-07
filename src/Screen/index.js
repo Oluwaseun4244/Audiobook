@@ -19,9 +19,10 @@ import { MdArrowDropDown } from "react-icons/md";
 import { BsPlayCircle } from "react-icons/bs";
 import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
 import { FaIdBadge } from "react-icons/fa";
-// import ReactAudioPlayer from "react-audio-player";
+import ReactAudioPlayer from "react-audio-player";
 import { useDispatch, useSelector } from "react-redux";
 import { lastPlayed } from "../Redux/Actions/actions";
+import Audios from "../Data/Audios.json";
 
 export default function Audio() {
   const lastPlayedState = useSelector((state) => state.lastPlayedReducer);
@@ -31,7 +32,9 @@ export default function Audio() {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
-  const [audioSource, setAudioSource] = useState("audio1");
+  const [audioSource, setAudioSource] = useState(
+    "https://archive.org/download/aesop_fables_volume_one_librivox/fables_01_01_aesop.mp3"
+  );
   const [title, setTitle] = useState("Intro");
 
   const audioPlayer = useRef();
@@ -86,10 +89,10 @@ export default function Audio() {
     setTitle(title);
 
     if (title === lastPlayedState.audioTitle) {
-      //   alert("yep1");
+        alert("yep1");
       setTimeout(() => {
         if (lastPlayedState.audioDuration === audioPlayer.current.duration) {
-          //   alert("yep2");
+            alert("yep2");
           setTimeout(() => {
             audioPlayer.current.currentTime = lastPlayedState.audioCurrentTime;
             progressBar.current.value = lastPlayedState.audioCurrentTime;
@@ -143,6 +146,7 @@ export default function Audio() {
                 Instaread
               </Text>
             </HStack>
+       
           </Box>
 
           <Spacer />
@@ -484,7 +488,7 @@ export default function Audio() {
                         <audio
                           color="red"
                           ref={audioPlayer}
-                          src={`/audio/${audioSource}.mp3`}
+                          src={audioSource}
                           style={{ color: "green" }}
                         />
 
@@ -497,31 +501,29 @@ export default function Audio() {
                           >
                             Table of contents
                           </Text>
-                          {Array(6)
-                            .fill("")
-                            .map((item, i) => (
-                              <Box
-                                mt="5px"
-                                key={i}
-                                w={{ base: "100%", md: "60%" }}
-                                cursor="pointer"
-                                onClick={() =>
-                                  changeAudio(`audio${i + 1}`, `Title${i + 1}`)
-                                }
-                              >
-                                <HStack w={{ base: "80%", md: "100%" }}>
-                                  <Text color="#3a4649" fontSize="20px">
-                                    {i + 1}
-                                  </Text>
-                                  <Text pl="10px" fontSize="20px">
-                                    Title
-                                  </Text>
-                                  <Spacer />
-                                  <BsPlayCircle cursor="pointer" />
-                                </HStack>
-                                <Divider color="#5c626e" />
-                              </Box>
-                            ))}
+                          {Audios.map((audio, i) => (
+                            <Box
+                              mt="5px"
+                              key={i}
+                              w={{ base: "100%", md: "60%" }}
+                              cursor="pointer"
+                              onClick={() =>
+                                changeAudio(audio.src, audio.title)
+                              }
+                            >
+                              <HStack w={{ base: "80%", md: "100%" }}>
+                                <Text color="#3a4649" fontSize="20px">
+                                  {i + 1}
+                                </Text>
+                                <Text pl="10px" fontSize="16px">
+                                  {audio.title}
+                                </Text>
+                                <Spacer />
+                                <BsPlayCircle cursor="pointer" />
+                              </HStack>
+                              <Divider color="#5c626e" />
+                            </Box>
+                          ))}
                         </Box>
                       </Box>
                     </Stack>
