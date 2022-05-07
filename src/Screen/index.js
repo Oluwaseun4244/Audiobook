@@ -12,19 +12,20 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Input,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState, useEffect, useRef } from "react";
 import { MdArrowDropDown } from "react-icons/md";
 import { BsPlayCircle } from "react-icons/bs";
 import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
 import { FaIdBadge } from "react-icons/fa";
-import ReactAudioPlayer from "react-audio-player";
+// import ReactAudioPlayer from "react-audio-player";
 import { useDispatch, useSelector } from "react-redux";
 import { lastPlayed } from "../Redux/Actions/actions";
 import Audios from "../Data/Audios.json";
 
 export default function Audio() {
+  const toast = useToast();
   const lastPlayedState = useSelector((state) => state.lastPlayedReducer);
   const dispatch = useDispatch();
 
@@ -32,10 +33,9 @@ export default function Audio() {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
-  const [audioSource, setAudioSource] = useState(
-    "https://archive.org/download/aesop_fables_volume_one_librivox/fables_01_01_aesop.mp3"
-  );
-  const [title, setTitle] = useState("Intro");
+  const [audioSource, setAudioSource] = useState("");
+  const [title, setTitle] = useState("");
+  const [onBoard, setOnBoard] = useState(true);
 
   const audioPlayer = useRef();
   const progressBar = useRef();
@@ -44,6 +44,9 @@ export default function Audio() {
   const PauseAndPlay = () => {
     setIsPlaying(!isPlaying);
 
+    if (onBoard) {
+      notify();
+    }
     if (!isPlaying) {
       audioPlayer.current.play();
       animationRef.current = requestAnimationFrame(whilePlaying);
@@ -87,26 +90,19 @@ export default function Audio() {
   const changeAudio = (src, title) => {
     setAudioSource(src);
     setTitle(title);
+    setOnBoard(false);
 
     if (title === lastPlayedState.audioTitle) {
-        // alert("yep1");
-        // console.log("state duration", lastPlayedState.audioDuration)
-        // console.log("audio duration", audioPlayer.current.duration)
       setTimeout(() => {
-        // if (lastPlayedState.audioDuration === audioPlayer.current.duration) {
-            // alert("yep2");
-          setTimeout(() => {
-            audioPlayer.current.currentTime = lastPlayedState.audioCurrentTime;
-            progressBar.current.value = lastPlayedState.audioCurrentTime;
-            const seconds = Math.floor(audioPlayer.current.duration);
-            setDuration(seconds);
-            setIsPlaying(true);
+        audioPlayer.current.currentTime = lastPlayedState.audioCurrentTime;
+        progressBar.current.value = lastPlayedState.audioCurrentTime;
+        const seconds = Math.floor(audioPlayer.current.duration);
+        setDuration(seconds);
+        setIsPlaying(true);
 
-            audioPlayer.current.play();
-            animationRef.current = requestAnimationFrame(whilePlaying);
-          }, 800);
-        // }
-      }, 400);
+        audioPlayer.current.play();
+        animationRef.current = requestAnimationFrame(whilePlaying);
+      }, 500);
     }
 
     setTimeout(() => {
@@ -121,6 +117,16 @@ export default function Audio() {
       audioPlayer.current.play();
       animationRef.current = requestAnimationFrame(whilePlaying);
     }, 500);
+  };
+
+  const notify = () => {
+    toast({
+      title: "Select an Audio.",
+      description: "You need to select an audio to play.",
+      status: "info",
+      duration: 5000,
+      isClosable: true,
+    });
   };
 
   useEffect(() => {
@@ -147,9 +153,7 @@ export default function Audio() {
               <Text fontSize="19px" fontWeight="500" color="#000000">
                 Instaread
               </Text>
-        
             </HStack>
-       
           </Box>
 
           <Spacer />
@@ -431,7 +435,7 @@ export default function Audio() {
                                 color="white"
                                 fontSize="16px"
                               >
-                                {title}
+                                {onBoard ? "Ready to play" : title}
                               </Text>
                               <HStack>
                                 {isPlaying ? (
@@ -466,7 +470,6 @@ export default function Audio() {
                                   </Box>
                                 )}
 
-                                {/* <Input type="range" /> */}
                                 <input
                                   style={{ height: "4px", cursor: "pointer" }}
                                   defaultValue="0"
