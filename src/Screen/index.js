@@ -34,7 +34,7 @@ export default function Audio() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioSource, setAudioSource] = useState("");
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("Ready to play");
   const [onBoard, setOnBoard] = useState(true);
 
   const audioPlayer = useRef();
@@ -42,11 +42,12 @@ export default function Audio() {
   const animationRef = useRef();
 
   const PauseAndPlay = () => {
-    setIsPlaying(!isPlaying);
-
     if (onBoard) {
       notify();
+      return;
     }
+
+    setIsPlaying(!isPlaying);
     if (!isPlaying) {
       audioPlayer.current.play();
       animationRef.current = requestAnimationFrame(whilePlaying);
@@ -435,7 +436,7 @@ export default function Audio() {
                                 color="white"
                                 fontSize="16px"
                               >
-                                {onBoard ? "Ready to play" : title}
+                                {title}
                               </Text>
                               <HStack>
                                 {isPlaying ? (
