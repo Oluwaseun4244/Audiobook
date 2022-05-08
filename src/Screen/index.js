@@ -41,12 +41,15 @@ export default function Audio() {
   const progressBar = useRef();
   const animationRef = useRef();
 
+  //handles audio pause and play event
   const PauseAndPlay = () => {
+    //checks if user just arrived on the page
     if (onBoard) {
       notify();
       return;
     }
 
+    //plays audio if not playing and stops it if playing
     setIsPlaying(!isPlaying);
     if (!isPlaying) {
       audioPlayer.current.play();
@@ -57,11 +60,14 @@ export default function Audio() {
     }
   };
 
+  // keeps running while audio is playing
   const whilePlaying = () => {
+    // moves the range progress bar according to audio current time
     progressBar.current.value = audioPlayer.current.currentTime;
 
     dispatch(lastPlayed("updateCurrentTime", audioPlayer.current.currentTime));
 
+    //checks if audio has ended and stops the reccursion
     if (audioPlayer.current.ended) {
       setIsPlaying(false);
       dispatch(lastPlayed("updateCurrentTime", 0));
@@ -71,7 +77,7 @@ export default function Audio() {
     animationRef.current = requestAnimationFrame(whilePlaying);
   };
 
-  //handles minutes and seconds for duration sake
+  //handles minutes and seconds for duration view sake
   const timeCalculator = (secs) => {
     const minutes = Math.floor(secs / 60);
     const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
@@ -81,8 +87,7 @@ export default function Audio() {
     return `${returnedMinutes}:${returnedSeconds}`;
   };
 
-  // moves the range progress bar according to audio current time
-
+  //changes the audio current time based on the range input
   const handleAudioPosition = () => {
     audioPlayer.current.currentTime = progressBar.current.value;
   };
@@ -93,6 +98,7 @@ export default function Audio() {
     setTitle(title);
     setOnBoard(false);
 
+    // check if audio was the last played by user
     if (title === lastPlayedState.audioTitle) {
       setTimeout(() => {
         audioPlayer.current.currentTime = lastPlayedState.audioCurrentTime;
@@ -104,22 +110,24 @@ export default function Audio() {
         audioPlayer.current.play();
         animationRef.current = requestAnimationFrame(whilePlaying);
       }, 500);
+    } else {
+      setTimeout(() => {
+        dispatch(lastPlayed("updateTitle", title));
+        dispatch(lastPlayed("updateDuration", audioPlayer.current.duration));
+
+        const seconds = Math.floor(audioPlayer.current.duration);
+        setDuration(seconds);
+
+        setIsPlaying(true);
+
+        audioPlayer.current.play();
+        animationRef.current = requestAnimationFrame(whilePlaying);
+      }, 500);
     }
-
-    setTimeout(() => {
-      dispatch(lastPlayed("updateTitle", title));
-      dispatch(lastPlayed("updateDuration", audioPlayer.current.duration));
-
-      const seconds = Math.floor(audioPlayer.current.duration);
-      setDuration(seconds);
-
-      setIsPlaying(true);
-
-      audioPlayer.current.play();
-      animationRef.current = requestAnimationFrame(whilePlaying);
-    }, 500);
   };
 
+
+  // notify user to select audio
   const notify = () => {
     toast({
       title: "Select an Audio.",
@@ -178,8 +186,6 @@ export default function Audio() {
               <HStack p="0px">
                 <Text fontSize="19px" fontWeight="500" color="#8f95a3">
                   Login
-                  {/* <Box as="span">
-                </Box> */}
                 </Text>
                 <MdArrowDropDown />
               </HStack>
