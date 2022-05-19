@@ -160,7 +160,7 @@ export default function Audio() {
             <HStack>
               <FaIdBadge />
               <Text fontSize="19px" fontWeight="500" color="#000000">
-                Instaread
+                Audiobook
               </Text>
             </HStack>
           </Box>
@@ -179,7 +179,7 @@ export default function Audio() {
             </Box>
             <Box>
               <Text fontSize="19px" fontWeight="500" color="#009aeb">
-                Try Instaread
+                Try Audiobook
               </Text>
             </Box>
             <Box>
@@ -290,7 +290,7 @@ export default function Audio() {
                 >
                   Business & Finance
                 </Button>
-                <Button
+                {/* <Button
                   fontFamily="SFProDisplay"
                   fontSize="15px"
                   h="32px"
@@ -299,7 +299,7 @@ export default function Audio() {
                   bg="#8f95a3"
                 >
                   Business & Finance
-                </Button>
+                </Button> */}
               </Stack>
             </Box>
           </Stack>
